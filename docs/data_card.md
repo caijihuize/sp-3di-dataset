@@ -19,4 +19,8 @@ The build retained 503,440 of 550,122 paired AA/3Di records after filtering and 
 ## Rights and attribution
 
 Repository code uses the license stated in `LICENSE`. Source data and third-party tools retain their own terms. Review the source provider's current terms before redistributing structures or derived data.
+
+## Download
+
+The public data release, including Parquet sequences, split IDs, validation/test PDBs, provenance, and checksums, is hosted at <https://huggingface.co/datasets/caijihuize/sp-3di-dataset>. Training PDB files are not included. See the repository README for loading and selective-download examples.
 \n

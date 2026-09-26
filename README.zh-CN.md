@@ -8,7 +8,57 @@ SP v3 候选版本已完成构建并通过发布验证。当前包含 train 364,
 
 Foldseek 结构邻居用于报告和复核，不作为硬性排除条件。划分 ID、PDB 和 AA–3Di 数据将与代码仓库分开发布；数据发布材料记录原始归档 SHA-256、软件版本和构建参数。
 
-公开数据集：[Hugging Face Hub](https://huggingface.co/datasets/caijihuize/sp-3di-dataset)。
+公开数据集：[Hugging Face Hub](https://huggingface.co/datasets/caijihuize/sp-3di-dataset)。Hub 仓库包含配对序列、划分 ID、版本元数据和评测结构；不包含 27 GB 原始归档及中间搜索数据库。
+
+## 获取数据
+
+### 内容与划分
+
+| 划分 | 条数 | PDB 结构 | ID 清单 |
+|---|---:|---:|---|
+| `train` | 364,752 | 未提供 | `ids/train_ids.txt` |
+| `validation` | 1,000 | 1,000 | `ids/valid_ids.txt` |
+| `test` | 1,000 | 1,000 | `ids/test_ids.txt` |
+
+每条 Parquet 记录包含 `id`（AlphaFold 模型 ID）、`sequence_3di`（Foldseek 3Di 序列）和 `sequence_aa`（氨基酸序列）。ID 清单顺序与对应 Parquet 行顺序一致。验证集在 Parquet 中称为 `validation`，在 ID 文件和构建清单中称为 `valid`。PDB 文件名与记录中的 `id` 一致。
+
+### 使用 🤗 Datasets 加载配对序列
+
+```bash
+pip install datasets
+```
+
+```python
+from datasets import load_dataset
+
+base = "hf://datasets/caijihuize/sp-3di-dataset/data/"
+dataset = load_dataset("parquet", data_files={
+    "train": base + "train-00000-of-00001.parquet",
+    "validation": base + "validation-00000-of-00001.parquet",
+    "test": base + "test-00000-of-00001.parquet",
+})
+example = dataset["test"][0]
+print(example["id"], example["sequence_3di"], example["sequence_aa"])
+```
+
+### 下载 PDB 或完整数据
+
+如尚未安装 Hugging Face 命令行工具，可运行 `pip install -U huggingface_hub`；公开文件无需令牌即可下载。
+
+只下载 test PDB 和对应 ID 清单：
+
+```bash
+hf download caijihuize/sp-3di-dataset \
+  --repo-type dataset \
+  --include "structures/test/*.pdb" "ids/test_ids.txt" \
+  --local-dir ./sp3di-test
+```
+
+验证集 PDB 路径为 `structures/validation/*.pdb`。若需完整下载，去掉 `--include` 并指定本地目录；完整发布包约 580 MiB。下载到完整目录后，可运行 `sha256sum -c checksums/SHA256SUMS` 校验文件。
+
+### 来源与限制
+
+`provenance/` 包含源归档校验和、MMseqs2/Foldseek 版本与参数、划分统计、聚类成员、排除记录以及审计和验证摘要。最终序列审计在 identity 至少 30%、双侧 coverage 至少 80% 的条件下未检出跨划分命中。Foldseek 结构邻居仅作报告，未作为硬性划分过滤；这些检查不代表折叠级别的新颖性。PDB 是 AlphaFold 预测结构；当前没有提供训练集 PDB。复用结构时请保留 AlphaFold 数据来源署名；许可与引用信息见 [Hugging Face 数据卡](https://huggingface.co/datasets/caijihuize/sp-3di-dataset)。
 
 ## 数据与划分规则
 

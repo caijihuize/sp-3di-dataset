@@ -10,7 +10,59 @@ The SP v3 candidate build has completed and passed release validation. It contai
 
 Foldseek structural neighbors are reported for review; they are not used as a hard exclusion. The split ID lists and PDB/AA–3Di data are distributed separately from this code repository. The source archive SHA-256, software versions, and build parameters are recorded in the build metadata for the data release.
 
-The public dataset release is hosted on the [Hugging Face Hub](https://huggingface.co/datasets/caijihuize/sp-3di-dataset).
+The public dataset release is hosted on the [Hugging Face Hub](https://huggingface.co/datasets/caijihuize/sp-3di-dataset). The Hub repository contains the paired sequences, split IDs, release metadata, and evaluation structures. The 27 GB source archive and intermediate search databases are not mirrored there.
+
+## Get the dataset
+
+### Contents
+
+| Split | Records | PDB structures | ID list |
+|---|---:|---:|---|
+| `train` | 364,752 | Not included | `ids/train_ids.txt` |
+| `validation` | 1,000 | 1,000 | `ids/valid_ids.txt` |
+| `test` | 1,000 | 1,000 | `ids/test_ids.txt` |
+
+Each Parquet row has three columns: `id` (AlphaFold model ID), `sequence_3di` (Foldseek 3Di), and `sequence_aa` (amino-acid sequence). ID files follow the same row order as the corresponding Parquet split. Validation is called `validation` in Parquet filenames and `valid` in the ID filename and build manifests. PDB filenames match the row `id`.
+
+### Load sequence pairs with 🤗 Datasets
+
+```bash
+pip install datasets
+```
+
+```python
+from datasets import load_dataset
+
+base = "hf://datasets/caijihuize/sp-3di-dataset/data/"
+dataset = load_dataset("parquet", data_files={
+    "train": base + "train-00000-of-00001.parquet",
+    "validation": base + "validation-00000-of-00001.parquet",
+    "test": base + "test-00000-of-00001.parquet",
+})
+example = dataset["test"][0]
+print(example["id"], example["sequence_3di"], example["sequence_aa"])
+```
+
+### Download PDB structures or all release files
+
+Install and authenticate the Hugging Face CLI if needed (`pip install -U huggingface_hub`, then `hf auth login`). Public files can also be downloaded without a token.
+
+Download only the test PDBs and their ID list:
+
+```bash
+hf download caijihuize/sp-3di-dataset \
+  --repo-type dataset \
+  --include "structures/test/*.pdb" "ids/test_ids.txt" \
+  --local-dir ./sp3di-test
+```
+
+Use `structures/validation/*.pdb` for validation structures. To download the complete release, omit `--include` and select a local directory; the full release is about 580 MiB. Verify downloaded files from that directory with `sha256sum -c checksums/SHA256SUMS`.
+
+### Provenance and limitations
+
+`provenance/` contains the source checksum, MMseqs2/Foldseek versions and parameters, split counts, cluster membership, exclusions, and audit/validation summaries. The final sequence audit detected no alignments at or above 30% identity with at least 80% coverage of both sequences. Foldseek structural neighbors are reported but are not a hard split filter. These checks do not establish fold novelty. The PDBs are AlphaFold predictions; no training-split PDB files are included.
+
+The AlphaFold source data are distributed under CC BY 4.0; retain source attribution when reusing the structures. See the [dataset card](https://huggingface.co/datasets/caijihuize/sp-3di-dataset) for citations and release details.
 
 ## Data source
 
