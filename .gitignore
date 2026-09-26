@@ -1,0 +1,21 @@
+# Raw/intermediate/processed data and run products are too large or reproducible
+data/raw/*
+!data/raw/README.md
+data/interim/*
+data/processed/*
+runs/*
+!runs/README.md
+*.dbtype
+*.index
+*.lookup
+*.source
+*.ffdata
+*.ffindex
+*.ffindex.dbtype
+*.ffdata.dbtype
+__pycache__/
+.pytest_cache/
+.venv/
+*.egg-info/
+core.*
+\n

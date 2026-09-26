@@ -1,0 +1,43 @@
+dataset_version: sp_v3
+source:
+  url: https://ftp.ebi.ac.uk/pub/databases/alphafold/latest/swissprot_pdb_v6.tar
+  archive: data/raw/swissprot_pdb_v6.tar
+  # SHA-256 is generated from the migrated archive and frozen in source_manifest.json.
+filter:
+  min_length: 16
+  max_length: 0 # 0 means no upper bound in the master corpus
+  min_mean_ca_plddt: 70.0
+  max_unknown_aa_fraction: 0.20
+  require_equal_aa_3di_length: true
+  require_valid_3di_alphabet: true
+clustering:
+  software: mmseqs
+  min_sequence_identity: 0.30
+  coverage: 0.80
+  coverage_mode: 0 # require coverage of both sequences
+  alignment_mode: 3
+  cluster_mode: 0
+  sensitivity: 7.5
+  max_seqs: 300
+  threads: 32
+split:
+  seed: 42
+  valid_clusters: 1000
+  test_clusters: 1000
+  evaluation_min_length: 30
+  evaluation_max_length: 510
+  representative: highest_plddt_then_lexicographic_id
+audit:
+  cross_split_sequence_check: true
+  search_min_sequence_identity: 0.30
+  search_min_bidirectional_coverage: 0.80
+  search_records_per_target_shard: 50000
+  search_max_sequences_per_query: 100000
+  foldseek_structure_audit: true
+  structure_audit_is_hard_exclusion: false
+  foldseek_max_neighbors: 10
+export:
+  hf_dataset: true
+  evaluation_pdb: true
+  preserve_id_order_in_manifests: true
+\n

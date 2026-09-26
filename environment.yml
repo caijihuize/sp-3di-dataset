@@ -1,0 +1,14 @@
+name: sp-dataset
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pyyaml
+  - mmseqs2
+  - foldseek
+  - pip
+  - pip:
+      - datasets>=2.18
+
+\n
