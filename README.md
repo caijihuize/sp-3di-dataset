@@ -10,6 +10,8 @@ The SP v3 candidate build has completed and passed release validation. It contai
 
 Foldseek structural neighbors are reported for review; they are not used as a hard exclusion. The split ID lists and PDB/AA–3Di data are distributed separately from this code repository. The source archive SHA-256, software versions, and build parameters are recorded in the build metadata for the data release.
 
+The public dataset release is hosted on the [Hugging Face Hub](https://huggingface.co/datasets/caijihuize/sp-3di-dataset).
+
 ## Data source
 
 Source: [AlphaFold DB Swiss-Prot PDB v6 archive](https://ftp.ebi.ac.uk/pub/databases/alphafold/latest/swissprot_pdb_v6.tar). The archive is intentionally excluded from Git. Place it at `data/raw/swissprot_pdb_v6.tar`; record and verify its SHA-256 with `scripts/00_record_source.sh`.

@@ -8,6 +8,8 @@ SP v3 候选版本已完成构建并通过发布验证。当前包含 train 364,
 
 Foldseek 结构邻居用于报告和复核，不作为硬性排除条件。划分 ID、PDB 和 AA–3Di 数据将与代码仓库分开发布；数据发布材料记录原始归档 SHA-256、软件版本和构建参数。
 
+公开数据集：[Hugging Face Hub](https://huggingface.co/datasets/caijihuize/sp-3di-dataset)。
+
 ## 数据与划分规则
 
 - 数据来源：[AlphaFold DB Swiss-Prot PDB v6](https://ftp.ebi.ac.uk/pub/databases/alphafold/latest/swissprot_pdb_v6.tar)，大文件不提交 Git。
